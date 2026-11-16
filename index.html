@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Solyra – Yazarın Dünyası</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#2e7a93;--mid:#9cc5d8;--ink:#1f4350;--mu:#5d7f8c;--pet:#2f7f8c;--foam:#e8f5f3;--bg:var(--deep);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root.pg-home{--bg:#2e7a93}:root.pg-book{--bg:#dcedf4}:root.pg-read{--bg:#f3f8f6}
+html{background:var(--bg)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif}
+h1,h2,h3,.ser{font-family:"Cormorant Garamond",Georgia,serif}
+h2{font-size:32px;margin:0 0 16px;font-weight:700}
+.w{max-width:860px;margin:0 auto;padding:20px 18px 80px}
+.deep{color:#eaf4f8;background:radial-gradient(circle at 20% 15%,rgba(255,255,255,.12),transparent 45%),radial-gradient(circle at 85% 70%,rgba(70,170,170,.25),transparent 50%),linear-gradient(170deg,#2f7390,#2c7f8c 60%,#2e7a93)}
+.hero{text-align:center;padding:60px 20px 30px;max-width:860px;margin:0 auto}
+.logo{width:84px;height:84px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;font-size:38px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3)}
+.hero h1{font-size:68px;margin:0;letter-spacing:3px;font-weight:700;text-shadow:0 2px 18px rgba(20,60,80,.35)}
+.hero .lead{font-size:19px;max-width:520px;margin:10px auto 14px;color:#d8ebf2}
+.tags span{display:inline-block;border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:2px 14px;margin:3px;font-size:13px}
+.ann{max-width:860px;margin:10px auto 0;padding:0 18px 20px}.ann h3{font-size:24px;margin:20px 0 8px}
+.ann div{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:10px 14px;margin-bottom:8px}
+.wave{height:50px;background-size:720px 50px;background-repeat:repeat-x;animation:wv 24s linear infinite}
+.wave.a{background-color:#2e7a93;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 50'%3E%3Cpath d='M0 25Q180 0 360 25T720 25T1080 25T1440 25V50H0Z' fill='%239cc5d8'/%3E%3C/svg%3E")}
+.wave.b{background-color:#9cc5d8;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 50'%3E%3Cpath d='M0 25Q180 0 360 25T720 25T1080 25T1440 25V50H0Z' fill='%232e7a93'/%3E%3C/svg%3E")}
+@keyframes wv{to{background-position-x:720px}}
+@media (prefers-reduced-motion:reduce){.wave{animation:none}}
+.lib{background:var(--mid);padding:10px 0 20px}.lib .w{padding-bottom:30px}
+.foot{text-align:center;padding:20px 20px 50px;color:#d8ebf2}
+.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:22px}
+.bk{cursor:pointer;background:var(--foam);border-radius:18px;padding:12px;box-shadow:0 6px 18px rgba(30,80,100,.18)}
+.cover{aspect-ratio:2/3;border-radius:6px 12px 12px 6px;display:flex;align-items:flex-end;padding:12px;color:#fff;font-family:"Cormorant Garamond",serif;font-weight:700;font-size:21px;line-height:1.1;text-shadow:0 1px 6px rgba(0,0,0,.3);box-shadow:-3px 5px 12px rgba(30,70,90,.28);border-left:5px solid rgba(0,0,0,.18)}
+.bk small{display:block;margin-top:10px;color:var(--mu)}.st{font-size:12px;padding:1px 10px;border-radius:12px;background:var(--pet);color:#fff}
+.btn{border:1px solid rgba(31,67,80,.2);background:#f4faf9;color:var(--ink);border-radius:12px;padding:8px 14px;font:inherit;cursor:pointer}.btn.p{background:var(--pet);color:#fff;border:0}
+.deep .btn{background:rgba(255,255,255,.14);color:#eaf4f8;border-color:rgba(255,255,255,.35)}
+.back{background:none;border:0;color:var(--pet);font:inherit;font-weight:500;cursor:pointer;padding:0;margin-bottom:10px}
+.card{background:#f2f9fb;border:1px solid rgba(31,67,80,.1);border-radius:16px;padding:14px 16px;margin-bottom:12px;box-shadow:0 3px 10px rgba(30,80,100,.08)}
+.chars{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.fc{perspective:900px;height:230px;cursor:pointer}.fi{position:relative;width:100%;height:100%;transition:transform .7s;transform-style:preserve-3d}.fc.on .fi{transform:rotateY(180deg)}
+.fa,.fb{position:absolute;inset:0;border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:12px;overflow:auto;box-shadow:0 5px 14px rgba(30,80,100,.18)}
+.fa{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;color:#fff;text-align:center;font-family:"Cormorant Garamond",serif;font-size:23px;font-weight:700;text-shadow:0 1px 6px rgba(0,0,0,.25)}.fa i{font-style:normal;font-size:60px;margin-bottom:auto;margin-top:22px}
+.fb{transform:rotateY(180deg);background:var(--foam);border:1px solid var(--pet);font-size:13.5px;line-height:1.5}.fb b{color:var(--pet);font-size:16px}
+.ch{display:flex;gap:14px;align-items:center;cursor:pointer}.ch .n{font:700 28px "Cormorant Garamond",serif;color:var(--pet);min-width:34px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 22px}
+#txt{color:#24404a}#txt p{margin:0 0 1.2em}
+.q{border-left:3px solid #7fc1b8;padding-left:10px;color:var(--mu);font-style:italic;margin:4px 0}
+.pg-read .card{background:#fff}
+#sel{position:fixed;left:0;right:0;bottom:0;background:var(--foam);border-top:1px solid rgba(31,67,80,.15);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:none;z-index:5}
+#sel input{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(31,67,80,.2);background:#fff;color:var(--ink);font:inherit;margin:8px 0}
+#toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 16px;border-radius:20px;display:none;z-index:9;font-size:14px}
+</style></head><body>
+<div id="app"></div>
+<div id="sel"><div class="q" id="sq"></div><input id="si" placeholder="Bu kısım hakkında yorumun…"><button class="btn p" id="sg">Gönder</button> <button class="btn" id="sx">Kapat</button></div>
+<div id="toast"></div>
+<script>
+const B=[
+{id:1,t:"Gece Yarısı Mührü",g:"Fantastik",s:"Devam ediyor",c:"#1f6f8b,#6fb8b0",d:"Örnek tanıtım yazısı: Mühürlü bir şehirde, her gece yarısı kaybolan bir kapının peşine düşen genç bir kâtibin hikâyesi.",
+ch:[{n:"Aylin",a:19,k:"Meraklı, inatçı",r:"Baş karakter",e:"🐚",c:"#2f7f8c,#86c5bd"},{n:"Kael",a:27,k:"Gizemli, sadık",r:"Rehber",e:"🐋",c:"#3b6ea8,#93b8de"},{n:"Mira",a:15,k:"Neşeli, cesur",r:"Yardımcı",e:"🐠",c:"#b5795e,#e6bfa2"}],
+p:[{t:"Kapının Gölgesi",o:1,x:["Şehir uyurken saat kulesi on iki kez çaldı. Aylin pencereden dışarı baktığında sokağın ortasında, geçen gün orada olmayan bir kapı gördü.","Kapı usulca aralandı. İçeriden gelen ışık, kaldırım taşlarına altın bir harita çizdi.","Gitmemesi gerektiğini biliyordu. Ama bilmek ile yapmak arasındaki mesafe, o gece çok kısaydı."]},{t:"Mühürlü Sokak",o:1,x:["Sabah olduğunda kapı yoktu. Yalnızca duvarda silik bir mühür kalmıştı.","Kael, mührü parmağıyla izleyip fısıldadı: “Seni de seçmiş.”"]},{t:"Taslak bölüm",o:0,x:["Bu bölüm henüz yayımlanmadı."]}]},
+{id:2,t:"Yıldız Tozu",g:"Macera",s:"Yakında",c:"#b98b62,#ecd1a8",d:"Çok yakında.",ch:[],p:[]},
+{id:3,t:"Sessiz Liman",g:"Dram",s:"Tamamlandı",c:"#4a74a8,#a9c6e6",d:"Örnek tamamlanmış kitap.",ch:[],p:[]}];
+const ANN=["Gece Yarısı Mührü’nün 2. bölümü yayında!","Yıldız Tozu çok yakında kitaplıkta."];
+let S={size:19,lh:1.8,serif:true},CM={},LK={},q="";
+const $=s=>document.querySelector(s),app=$("#app"),g2=c=>`linear-gradient(160deg,${c.split(",")[0]},${c.split(",")[1]})`;
+const esc=s=>s.replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";setTimeout(()=>t.style.display="none",2200)}
+function home(){app.innerHTML=`<header class="deep"><div class="hero"><div class="logo">🐚</div><h1 class="ser">Solyra</h1><p class="lead">Hoş geldin. Burası hikâyelerimin yaşadığı, dalgaların arasında yazılmış küçük bir dünya.</p><p style="color:#d8ebf2;max-width:520px;margin:0 auto 12px">Kısa biyografim ve yazarlık anlayışım burada yer alacak.</p><div class="tags"><span>Fantastik</span><span>Macera</span><span>Dram</span></div></div>
+<div class="ann"><h3 class="ser">Duyurular</h3>${ANN.map(a=>`<div>${a}</div>`).join("")}</div></header><div class="wave a"></div>
+<section class="lib"><div class="w"><h2 class="ser">Kitaplarım</h2><div class="shelf">${B.map(b=>`<div class="bk" onclick="location.hash='book-${b.id}'"><div class="cover" style="background:${g2(b.c)}">${b.t}</div><small><span class="st">${b.s}</span> ${b.g}</small></div>`).join("")}</div></div></section><div class="wave b"></div>
+<footer class="deep foot"><button class="btn" onclick="toast('Yönetici paneli sonraki aşamada eklenecek')">Yönetici girişi</button></footer>`}
+function book(id){const b=B.find(x=>x.id==id);app.innerHTML=`<div class="w"><button class="back" onclick="location.hash='home'">← Ana sayfa</button>
+<div style="display:flex;gap:18px;align-items:flex-end"><div class="cover" style="width:120px;flex:none;background:${g2(b.c)}">${b.t}</div><div><h1 style="margin:0;font-size:38px">${b.t}</h1><span class="st">${b.s}</span> ${b.g}</div></div>
+<p style="margin:18px 0">${b.d}</p>${b.ch.length?`<h2 class="ser" style="margin-top:30px">Karakterler</h2><div class="chars">${b.ch.map(c=>`<div class="fc" onclick="this.classList.toggle('on')"><div class="fi"><div class="fa" style="background:${g2(c.c)}"><i>${c.e}</i>${c.n}</div><div class="fb"><b>${c.n}</b><br>Yaş: ${c.a}<br>Kişilik: ${c.k}<br>Rol: ${c.r}</div></div></div>`).join("")}</div>`:""}
+<h2 class="ser" style="margin-top:34px">Bölümler</h2>${b.p.map((p,i)=>p.o?`<div class="card ch" onclick="location.hash='read-${id}-${i}'"><span class="n">${i+1}</span><span>${p.t}</span></div>`:"").join("")||"<p>Henüz bölüm yok.</p>"}</div>`}
+function read(id,i){const b=B.find(x=>x.id==id),p=b.p[i],k=id+"-"+i;CM[k]=CM[k]||[];
+const ff=S.serif?'"Cormorant Garamond",Georgia,serif':"Inter,sans-serif";
+app.innerHTML=`<div class="w" style="max-width:720px"><button class="back" onclick="location.hash='book-${id}'">← ${b.t}</button><h2 class="ser" style="margin-top:6px">${i+1}. ${p.t}</h2>
+<div class="bar"><button class="btn" onclick="st('size',-1)">A−</button><button class="btn" onclick="st('size',1)">A+</button><button class="btn" onclick="st('lh',.2)">Satır aralığı</button><button class="btn" onclick="st('f')">Yazı tipi</button><button class="btn" onclick="lk('${k}')">${LK[k]?"♥":"♡"} Beğen</button></div>
+<div id="txt" style="font:${S.size}px/${S.lh} ${ff}">${p.x.map(t=>`<p>${t}</p>`).join("")}</div>
+<p style="color:var(--mu);font-size:13px">Bir cümleyi seç, o kısma özel yorum bırak.</p>
+<h2 class="ser" style="margin-top:30px">Yorumlar</h2><div id="cm">${CM[k].map(c=>`<div class="card"><div class="q">“${esc(c.q)}”</div>${esc(c.m)}</div>`).join("")||"<p style='color:var(--mu)'>İlk yorumu sen yaz.</p>"}</div></div>`;window.K=k}
+function st(a,v){if(a=="f")S.serif=!S.serif;else if(a=="lh")S.lh=S.lh>=2.2?1.5:S.lh+v;else S.size=Math.min(30,Math.max(14,S.size+v));const y=scrollY;route();scrollTo(0,y)}
+function lk(k){LK[k]=!LK[k];const y=scrollY;route();scrollTo(0,y)}
+function route(){const h=location.hash.slice(1).split("-");$("#sel").style.display="none";
+document.documentElement.className="pg-"+(h[0]=="book"||h[0]=="read"?h[0]:"home");
+if(h[0]=="book")book(h[1]);else if(h[0]=="read")read(h[1],+h[2]);else home()}
+addEventListener("hashchange",()=>{window.scrollTo(0,0);route()});route();
+document.addEventListener("selectionchange",()=>{const s=getSelection(),t=$("#txt");if(!t||s.isCollapsed||!t.contains(s.anchorNode))return;const x=s.toString().trim();if(x){q=x;$("#sq").textContent="“"+x.slice(0,140)+"”";$("#sel").style.display="block"}});
+$("#sx").onclick=()=>$("#sel").style.display="none";
+$("#sg").onclick=()=>{const m=$("#si").value.trim();if(!m||!q)return;CM[window.K].push({q,m});$("#si").value="";q="";const y=scrollY;route();scrollTo(0,y);toast("Yorum eklendi")};
+</script></body></html>
