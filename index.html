@@ -1,87 +1,142 @@
 <!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Solyra – Yazarın Dünyası</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <style>
-:root{--deep:#2e7a93;--mid:#9cc5d8;--ink:#1f4350;--mu:#5d7f8c;--pet:#2f7f8c;--foam:#e8f5f3;--bg:var(--deep);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--mid:#9cc5d8;--ink:#1f4350;--mu:#5d7f8c;--pet:#2f7f8c;--foam:#e8f5f3;--bg:#2e7a93;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 :root.pg-home{--bg:#2e7a93}:root.pg-book{--bg:#dcedf4}:root.pg-read{--bg:#f3f8f6}
 html{background:var(--bg)}*{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif}
-h1,h2,h3,.ser{font-family:"Cormorant Garamond",Georgia,serif}
-h2{font-size:32px;margin:0 0 16px;font-weight:700}
-.w{max-width:860px;margin:0 auto;padding:20px 18px 80px}
+h1,h2,h3,.ser{font-family:"Cormorant Garamond",Georgia,serif}h2{font-size:32px;margin:0 0 16px}
+.w{max-width:860px;margin:0 auto;padding:10px 18px 80px}
+.top{display:flex;gap:8px;justify-content:flex-end;align-items:center;padding:12px 16px;font-size:14px}
 .deep{color:#eaf4f8;background:radial-gradient(circle at 20% 15%,rgba(255,255,255,.12),transparent 45%),radial-gradient(circle at 85% 70%,rgba(70,170,170,.25),transparent 50%),linear-gradient(170deg,#2f7390,#2c7f8c 60%,#2e7a93)}
-.hero{text-align:center;padding:60px 20px 30px;max-width:860px;margin:0 auto}
+.hero{text-align:center;padding:40px 20px 30px;max-width:860px;margin:0 auto}
 .logo{width:84px;height:84px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;font-size:38px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3)}
-.hero h1{font-size:68px;margin:0;letter-spacing:3px;font-weight:700;text-shadow:0 2px 18px rgba(20,60,80,.35)}
-.hero .lead{font-size:19px;max-width:520px;margin:10px auto 14px;color:#d8ebf2}
+.hero h1{font-size:68px;margin:0;letter-spacing:3px;text-shadow:0 2px 18px rgba(20,60,80,.35)}
+.hero .lead{font-size:19px;max-width:520px;margin:10px auto 14px;color:#d8ebf2;white-space:pre-line}
 .tags span{display:inline-block;border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:2px 14px;margin:3px;font-size:13px}
 .ann{max-width:860px;margin:10px auto 0;padding:0 18px 20px}.ann h3{font-size:24px;margin:20px 0 8px}
 .ann div{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:10px 14px;margin-bottom:8px}
 .wave{height:50px;background-size:720px 50px;background-repeat:repeat-x;animation:wv 24s linear infinite}
 .wave.a{background-color:#2e7a93;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 50'%3E%3Cpath d='M0 25Q180 0 360 25T720 25T1080 25T1440 25V50H0Z' fill='%239cc5d8'/%3E%3C/svg%3E")}
 .wave.b{background-color:#9cc5d8;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 50'%3E%3Cpath d='M0 25Q180 0 360 25T720 25T1080 25T1440 25V50H0Z' fill='%232e7a93'/%3E%3C/svg%3E")}
-@keyframes wv{to{background-position-x:720px}}
-@media (prefers-reduced-motion:reduce){.wave{animation:none}}
-.lib{background:var(--mid);padding:10px 0 20px}.lib .w{padding-bottom:30px}
-.foot{text-align:center;padding:20px 20px 50px;color:#d8ebf2}
+@keyframes wv{to{background-position-x:720px}}@media (prefers-reduced-motion:reduce){.wave{animation:none}}
+.lib{background:var(--mid);padding:10px 0 20px}.foot{text-align:center;padding:20px 20px 50px;color:#d8ebf2}
 .shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:22px}
 .bk{cursor:pointer;background:var(--foam);border-radius:18px;padding:12px;box-shadow:0 6px 18px rgba(30,80,100,.18)}
-.cover{aspect-ratio:2/3;border-radius:6px 12px 12px 6px;display:flex;align-items:flex-end;padding:12px;color:#fff;font-family:"Cormorant Garamond",serif;font-weight:700;font-size:21px;line-height:1.1;text-shadow:0 1px 6px rgba(0,0,0,.3);box-shadow:-3px 5px 12px rgba(30,70,90,.28);border-left:5px solid rgba(0,0,0,.18)}
+.cover{aspect-ratio:2/3;border-radius:6px 12px 12px 6px;display:flex;align-items:flex-end;padding:12px;color:#fff;font:700 21px/1.1 "Cormorant Garamond",serif;text-shadow:0 1px 6px rgba(0,0,0,.3);box-shadow:-3px 5px 12px rgba(30,70,90,.28);border-left:5px solid rgba(0,0,0,.18)}
 .bk small{display:block;margin-top:10px;color:var(--mu)}.st{font-size:12px;padding:1px 10px;border-radius:12px;background:var(--pet);color:#fff}
 .btn{border:1px solid rgba(31,67,80,.2);background:#f4faf9;color:var(--ink);border-radius:12px;padding:8px 14px;font:inherit;cursor:pointer}.btn.p{background:var(--pet);color:#fff;border:0}
 .deep .btn{background:rgba(255,255,255,.14);color:#eaf4f8;border-color:rgba(255,255,255,.35)}
 .back{background:none;border:0;color:var(--pet);font:inherit;font-weight:500;cursor:pointer;padding:0;margin-bottom:10px}
 .card{background:#f2f9fb;border:1px solid rgba(31,67,80,.1);border-radius:16px;padding:14px 16px;margin-bottom:12px;box-shadow:0 3px 10px rgba(30,80,100,.08)}
+.pg-read .card{background:#fff}
 .chars{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
 .fc{perspective:900px;height:230px;cursor:pointer}.fi{position:relative;width:100%;height:100%;transition:transform .7s;transform-style:preserve-3d}.fc.on .fi{transform:rotateY(180deg)}
 .fa,.fb{position:absolute;inset:0;border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:12px;overflow:auto;box-shadow:0 5px 14px rgba(30,80,100,.18)}
-.fa{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;color:#fff;text-align:center;font-family:"Cormorant Garamond",serif;font-size:23px;font-weight:700;text-shadow:0 1px 6px rgba(0,0,0,.25)}.fa i{font-style:normal;font-size:60px;margin-bottom:auto;margin-top:22px}
+.fa{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;color:#fff;text-align:center;font:700 23px "Cormorant Garamond",serif;text-shadow:0 1px 6px rgba(0,0,0,.4)}.fa i{font-style:normal;font-size:60px;margin-bottom:auto;margin-top:22px}
 .fb{transform:rotateY(180deg);background:var(--foam);border:1px solid var(--pet);font-size:13.5px;line-height:1.5}.fb b{color:var(--pet);font-size:16px}
-.ch{display:flex;gap:14px;align-items:center;cursor:pointer}.ch .n{font:700 28px "Cormorant Garamond",serif;color:var(--pet);min-width:34px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer}
 .bar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 22px}
 #txt{color:#24404a}#txt p{margin:0 0 1.2em}
 .q{border-left:3px solid #7fc1b8;padding-left:10px;color:var(--mu);font-style:italic;margin:4px 0}
-.pg-read .card{background:#fff}
+small a{cursor:pointer;color:var(--pet)}.rep{margin-left:18px}
+label{display:block;margin:12px 0 4px;font-size:14px;color:var(--mu)}
+input,textarea,select{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(31,67,80,.2);background:#fff;color:var(--ink);font:inherit}
+textarea{min-height:90px}textarea.big{min-height:380px;line-height:1.7}.pv{max-width:120px;border-radius:8px;display:block;margin:6px 0}
+.bar2{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.mb{position:fixed;inset:0;background:rgba(20,50,64,.5);display:grid;place-items:center;z-index:20;padding:16px}
+.md{background:var(--foam);border-radius:18px;padding:20px;width:100%;max-width:380px}.md input{margin:6px 0}.er{color:#a33;font-size:13px;min-height:18px}
 #sel{position:fixed;left:0;right:0;bottom:0;background:var(--foam);border-top:1px solid rgba(31,67,80,.15);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:none;z-index:5}
-#sel input{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(31,67,80,.2);background:#fff;color:var(--ink);font:inherit;margin:8px 0}
-#toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 16px;border-radius:20px;display:none;z-index:9;font-size:14px}
+#sel input{margin:8px 0}
+#toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 16px;border-radius:20px;display:none;z-index:30;font-size:14px}
 </style></head><body>
-<div id="app"></div>
+<div id="app"></div><div id="m"></div>
 <div id="sel"><div class="q" id="sq"></div><input id="si" placeholder="Bu kısım hakkında yorumun…"><button class="btn p" id="sg">Gönder</button> <button class="btn" id="sx">Kapat</button></div>
 <div id="toast"></div>
 <script>
-const B=[
-{id:1,t:"Gece Yarısı Mührü",g:"Fantastik",s:"Devam ediyor",c:"#1f6f8b,#6fb8b0",d:"Örnek tanıtım yazısı: Mühürlü bir şehirde, her gece yarısı kaybolan bir kapının peşine düşen genç bir kâtibin hikâyesi.",
-ch:[{n:"Aylin",a:19,k:"Meraklı, inatçı",r:"Baş karakter",e:"🐚",c:"#2f7f8c,#86c5bd"},{n:"Kael",a:27,k:"Gizemli, sadık",r:"Rehber",e:"🐋",c:"#3b6ea8,#93b8de"},{n:"Mira",a:15,k:"Neşeli, cesur",r:"Yardımcı",e:"🐠",c:"#b5795e,#e6bfa2"}],
-p:[{t:"Kapının Gölgesi",o:1,x:["Şehir uyurken saat kulesi on iki kez çaldı. Aylin pencereden dışarı baktığında sokağın ortasında, geçen gün orada olmayan bir kapı gördü.","Kapı usulca aralandı. İçeriden gelen ışık, kaldırım taşlarına altın bir harita çizdi.","Gitmemesi gerektiğini biliyordu. Ama bilmek ile yapmak arasındaki mesafe, o gece çok kısaydı."]},{t:"Mühürlü Sokak",o:1,x:["Sabah olduğunda kapı yoktu. Yalnızca duvarda silik bir mühür kalmıştı.","Kael, mührü parmağıyla izleyip fısıldadı: “Seni de seçmiş.”"]},{t:"Taslak bölüm",o:0,x:["Bu bölüm henüz yayımlanmadı."]}]},
-{id:2,t:"Yıldız Tozu",g:"Macera",s:"Yakında",c:"#b98b62,#ecd1a8",d:"Çok yakında.",ch:[],p:[]},
-{id:3,t:"Sessiz Liman",g:"Dram",s:"Tamamlandı",c:"#4a74a8,#a9c6e6",d:"Örnek tamamlanmış kitap.",ch:[],p:[]}];
-const ANN=["Gece Yarısı Mührü’nün 2. bölümü yayında!","Yıldız Tozu çok yakında kitaplıkta."];
-let S={size:19,lh:1.8,serif:true},CM={},LK={},q="";
-const $=s=>document.querySelector(s),app=$("#app"),g2=c=>`linear-gradient(160deg,${c.split(",")[0]},${c.split(",")[1]})`;
-const esc=s=>s.replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
-function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";setTimeout(()=>t.style.display="none",2200)}
-function home(){app.innerHTML=`<header class="deep"><div class="hero"><div class="logo">🐚</div><h1 class="ser">Solyra</h1><p class="lead">Hoş geldin. Burası hikâyelerimin yaşadığı, dalgaların arasında yazılmış küçük bir dünya.</p><p style="color:#d8ebf2;max-width:520px;margin:0 auto 12px">Kısa biyografim ve yazarlık anlayışım burada yer alacak.</p><div class="tags"><span>Fantastik</span><span>Macera</span><span>Dram</span></div></div>
-<div class="ann"><h3 class="ser">Duyurular</h3>${ANN.map(a=>`<div>${a}</div>`).join("")}</div></header><div class="wave a"></div>
-<section class="lib"><div class="w"><h2 class="ser">Kitaplarım</h2><div class="shelf">${B.map(b=>`<div class="bk" onclick="location.hash='book-${b.id}'"><div class="cover" style="background:${g2(b.c)}">${b.t}</div><small><span class="st">${b.s}</span> ${b.g}</small></div>`).join("")}</div></div></section><div class="wave b"></div>
-<footer class="deep foot"><button class="btn" onclick="toast('Yönetici paneli sonraki aşamada eklenecek')">Yönetici girişi</button></footer>`}
-function book(id){const b=B.find(x=>x.id==id);app.innerHTML=`<div class="w"><button class="back" onclick="location.hash='home'">← Ana sayfa</button>
-<div style="display:flex;gap:18px;align-items:flex-end"><div class="cover" style="width:120px;flex:none;background:${g2(b.c)}">${b.t}</div><div><h1 style="margin:0;font-size:38px">${b.t}</h1><span class="st">${b.s}</span> ${b.g}</div></div>
-<p style="margin:18px 0">${b.d}</p>${b.ch.length?`<h2 class="ser" style="margin-top:30px">Karakterler</h2><div class="chars">${b.ch.map(c=>`<div class="fc" onclick="this.classList.toggle('on')"><div class="fi"><div class="fa" style="background:${g2(c.c)}"><i>${c.e}</i>${c.n}</div><div class="fb"><b>${c.n}</b><br>Yaş: ${c.a}<br>Kişilik: ${c.k}<br>Rol: ${c.r}</div></div></div>`).join("")}</div>`:""}
-<h2 class="ser" style="margin-top:34px">Bölümler</h2>${b.p.map((p,i)=>p.o?`<div class="card ch" onclick="location.hash='read-${id}-${i}'"><span class="n">${i+1}</span><span>${p.t}</span></div>`:"").join("")||"<p>Henüz bölüm yok.</p>"}</div>`}
-function read(id,i){const b=B.find(x=>x.id==id),p=b.p[i],k=id+"-"+i;CM[k]=CM[k]||[];
-const ff=S.serif?'"Cormorant Garamond",Georgia,serif':"Inter,sans-serif";
-app.innerHTML=`<div class="w" style="max-width:720px"><button class="back" onclick="location.hash='book-${id}'">← ${b.t}</button><h2 class="ser" style="margin-top:6px">${i+1}. ${p.t}</h2>
-<div class="bar"><button class="btn" onclick="st('size',-1)">A−</button><button class="btn" onclick="st('size',1)">A+</button><button class="btn" onclick="st('lh',.2)">Satır aralığı</button><button class="btn" onclick="st('f')">Yazı tipi</button><button class="btn" onclick="lk('${k}')">${LK[k]?"♥":"♡"} Beğen</button></div>
-<div id="txt" style="font:${S.size}px/${S.lh} ${ff}">${p.x.map(t=>`<p>${t}</p>`).join("")}</div>
+const sb=supabase.createClient("https://tcnlpsrxiyugvfurahfw.supabase.co","sb_publishable_v6hr4L3Cn2t30oT5KSLBbg_wfFzWaSV");
+let me=null,adm=false,S={size:19,lh:1.8,serif:true},q="",CH=0;
+const $=s=>document.querySelector(s),app=$("#app");
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const toast=m=>{const t=$("#toast");t.textContent=m;t.style.display="block";setTimeout(()=>t.style.display="none",2600)};
+const PAL=["#1f6f8b,#6fb8b0","#b98b62,#ecd1a8","#4a74a8,#a9c6e6"],grad=c=>`linear-gradient(160deg,${c.split(",")[0]},${c.split(",")[1]})`;
+const cov=(b,st="")=>b.cover_url?`<div class="cover" style="${st};background:url('${esc(b.cover_url)}') center/cover"></div>`:`<div class="cover" style="${st};background:${grad(PAL[b.id%3])}">${esc(b.title)}</div>`;
+const go=h=>location.hash=h;
+async function load(){const{data:{session}}=await sb.auth.getSession();me=session?session.user:null;adm=false;if(me){const{data}=await sb.from("admins").select("user_id").eq("user_id",me.id).maybeSingle();adm=!!data}}
+sb.auth.onAuthStateChange((e,s)=>{const id=s&&s.user?s.user.id:null;if(id===(me?me.id:null)&&e!="INITIAL_SESSION")return;setTimeout(()=>load().then(route),0)});
+const bar=()=>`<div class="top">${me?`<span>${esc((me.user_metadata||{}).username||me.email)}</span>${adm?`<button class="btn" onclick="go('admin')">Yönetim</button>`:""}<button class="btn" onclick="sb.auth.signOut()">Çıkış</button>`:`<button class="btn" onclick="authBox()">Giriş / Kayıt</button>`}</div>`;
+function authBox(up){$("#m").innerHTML=`<div class="mb" onclick="if(event.target==this)this.innerHTML=''"><div class="md"><h3 class="ser" style="margin:0 0 8px;font-size:28px">${up?"Kayıt ol":"Giriş yap"}</h3>${up?'<input id="au" placeholder="Kullanıcı adı">':""}<input id="ae" type="email" placeholder="E-posta"><input id="ap" type="password" placeholder="Şifre (en az 6 karakter)"><p id="aerr" class="er"></p><button class="btn p" onclick="doAuth(${!!up})">${up?"Kayıt ol":"Giriş yap"}</button> <button class="btn" onclick="authBox(${!up})">${up?"Hesabım var":"Hesap oluştur"}</button></div></div>`}
+async function doAuth(up){const e=$("#ae").value.trim(),p=$("#ap").value,u=up?$("#au").value.trim():"",er=$("#aerr");if(up&&!u)return er.textContent="Bir kullanıcı adı yaz.";
+const r=up?await sb.auth.signUp({email:e,password:p,options:{data:{username:u}}}):await sb.auth.signInWithPassword({email:e,password:p});
+if(r.error)return er.textContent=r.error.message;
+if(up&&!r.data.session)return er.textContent="Kayıt tamam! E-postana gelen bağlantıyla hesabını doğrula, sonra giriş yap.";
+$("#m").innerHTML="";toast("Hoş geldin!")}
+async function home(){const[a,b,c]=await Promise.all([sb.from("site").select().eq("id",1).maybeSingle(),sb.from("announcements").select().order("created_at",{ascending:false}).limit(5),sb.from("books").select().order("position").order("id")]);
+const s=a.data||{},A=b.data||[],K=c.data||[];
+app.innerHTML=`<header class="deep">${bar()}<div class="hero"><div class="logo">🐚</div><h1 class="ser">${esc(s.author||"Solyra")}</h1><p class="lead">${esc(s.bio||"Hoş geldin. Burası hikâyelerimin yaşadığı küçük bir dünya.")}</p><div class="tags">${(s.tags||[]).map(t=>`<span>${esc(t)}</span>`).join("")}</div></div>${A.length?`<div class="ann"><h3 class="ser">Duyurular</h3>${A.map(x=>`<div>${esc(x.message)}</div>`).join("")}</div>`:""}</header><div class="wave a"></div>
+<section class="lib"><div class="w"><h2 class="ser">Kitaplarım</h2>${K.length?`<div class="shelf">${K.map(b=>`<div class="bk" onclick="go('book-${b.id}')">${cov(b)}<small><span class="st">${esc(b.status)}</span> ${esc(b.genre)}</small></div>`).join("")}</div>`:"<p>Henüz kitap eklenmedi.</p>"}</div></section><div class="wave b"></div><footer class="deep foot">🐚 ${esc(s.author||"Solyra")}</footer>`}
+async function book(id){const[a,b,c]=await Promise.all([sb.from("books").select().eq("id",id).maybeSingle(),sb.from("characters").select().eq("book_id",id).order("position"),sb.from("chapters").select("id,title,published").eq("book_id",id).order("position").order("id")]);
+const k=a.data;if(!k){app.innerHTML=`<div class="w">${bar()}<p>Kitap bulunamadı.</p></div>`;return}
+const C=b.data||[],P=c.data||[];
+app.innerHTML=`<div class="w">${bar()}<button class="back" onclick="go('home')">← Ana sayfa</button>
+<div style="display:flex;gap:18px;align-items:flex-end">${cov(k,"width:120px;flex:none")}<div><h1 style="margin:0;font-size:38px">${esc(k.title)}</h1><span class="st">${esc(k.status)}</span> ${esc(k.genre)}</div></div>
+<p style="margin:18px 0;white-space:pre-line">${esc(k.description)}</p>
+${C.length?`<h2 class="ser" style="margin-top:30px">Karakterler</h2><div class="chars">${C.map((c,i)=>`<div class="fc" onclick="this.classList.toggle('on')"><div class="fi"><div class="fa" style="background:${c.image_url?`url('${esc(c.image_url)}') center/cover`:grad(PAL[i%3])}">${c.image_url?"":"<i>🐚</i>"}${esc(c.name)}</div><div class="fb"><b>${esc(c.name)}</b><br>Yaş: ${esc(c.age)}<br>Kişilik: ${esc(c.traits)}<br>Rol: ${esc(c.role)}</div></div></div>`).join("")}</div>`:""}
+<h2 class="ser" style="margin-top:34px">Bölümler</h2>${P.map((p,i)=>`<div class="card row" onclick="go('read-${p.id}')"><span><b class="ser" style="font-size:26px;color:var(--pet)">${i+1}</b> &nbsp;${esc(p.title)}</span>${p.published?"":'<span class="st">Taslak</span>'}</div>`).join("")||"<p>Henüz bölüm yok.</p>"}</div>`}
+async function read(id){CH=+id;const{data:c}=await sb.from("chapters").select().eq("id",id).maybeSingle();
+if(!c){app.innerHTML=`<div class="w">${bar()}<p>Bölüm bulunamadı.</p></div>`;return}
+const[l,m]=await Promise.all([sb.from("likes").select("user_id").eq("chapter_id",id),sb.from("comments").select().eq("chapter_id",id).order("created_at")]);
+const M=m.data||[],L=l.data||[],ids=[...new Set(M.map(x=>x.user_id))],pr=ids.length?(await sb.from("profiles").select("id,username").in("id",ids)).data||[]:[],nm={};pr.forEach(p=>nm[p.id]=p.username);
+const cm=(x,r)=>`<div class="card ${r?"rep":""}"><b>${esc(nm[x.user_id]||"Okur")}</b> <small>${new Date(x.created_at).toLocaleDateString("tr-TR")}</small>${x.quote?`<div class="q">“${esc(x.quote)}”</div>`:""}<div>${esc(x.body)}</div><small>${r?"":`<a onclick="reply(${x.id})">Cevapla</a>`}${me&&(adm||me.id==x.user_id)?` ${r?"":"· "}<a onclick="delc(${x.id})">Sil</a>`:""}</small></div>`;
+const ff=S.serif?'"Cormorant Garamond",Georgia,serif':"Inter,sans-serif",liked=me&&L.some(x=>x.user_id==me.id);
+app.innerHTML=`<div class="w" style="max-width:720px">${bar()}<button class="back" onclick="go('book-${c.book_id}')">← Kitaba dön</button><h2 class="ser">${esc(c.title)}</h2>
+<div class="bar"><button class="btn" onclick="st('size',-1)">A−</button><button class="btn" onclick="st('size',1)">A+</button><button class="btn" onclick="st('lh')">Satır aralığı</button><button class="btn" onclick="st('f')">Yazı tipi</button><button class="btn" onclick="lk(${id},${!!liked})">${liked?"♥":"♡"} ${L.length}</button></div>
+<div id="txt" style="font:${S.size}px/${S.lh} ${ff}">${String(c.body||"").split(/\n+/).filter(Boolean).map(t=>`<p>${esc(t)}</p>`).join("")}</div>
 <p style="color:var(--mu);font-size:13px">Bir cümleyi seç, o kısma özel yorum bırak.</p>
-<h2 class="ser" style="margin-top:30px">Yorumlar</h2><div id="cm">${CM[k].map(c=>`<div class="card"><div class="q">“${esc(c.q)}”</div>${esc(c.m)}</div>`).join("")||"<p style='color:var(--mu)'>İlk yorumu sen yaz.</p>"}</div></div>`;window.K=k}
-function st(a,v){if(a=="f")S.serif=!S.serif;else if(a=="lh")S.lh=S.lh>=2.2?1.5:S.lh+v;else S.size=Math.min(30,Math.max(14,S.size+v));const y=scrollY;route();scrollTo(0,y)}
-function lk(k){LK[k]=!LK[k];const y=scrollY;route();scrollTo(0,y)}
-function route(){const h=location.hash.slice(1).split("-");$("#sel").style.display="none";
-document.documentElement.className="pg-"+(h[0]=="book"||h[0]=="read"?h[0]:"home");
-if(h[0]=="book")book(h[1]);else if(h[0]=="read")read(h[1],+h[2]);else home()}
-addEventListener("hashchange",()=>{window.scrollTo(0,0);route()});route();
+<h2 class="ser" style="margin-top:30px">Yorumlar</h2>${M.filter(x=>!x.parent_id).map(x=>cm(x)+M.filter(y=>y.parent_id==x.id).map(y=>cm(y,1)).join("")).join("")||"<p style='color:var(--mu)'>İlk yorumu sen yaz.</p>"}</div>`}
+const rr=async()=>{const y=scrollY;await route();scrollTo(0,y)};
+function st(a){if(a=="f")S.serif=!S.serif;else if(a=="lh")S.lh=S.lh>=2.2?1.5:+(S.lh+.2).toFixed(1);else S.size=Math.min(30,Math.max(14,S.size+(arguments[1]||0)));rr()}
+async function lk(id,on){if(!me)return authBox();const r=on?await sb.from("likes").delete().eq("chapter_id",id).eq("user_id",me.id):await sb.from("likes").insert({chapter_id:id});if(r.error)toast(r.error.message);rr()}
+async function reply(pid){if(!me)return authBox();const t=prompt("Cevabın:");if(!t)return;const r=await sb.from("comments").insert({chapter_id:CH,parent_id:pid,body:t});if(r.error)toast(r.error.message);rr()}
+async function delc(id){if(!confirm("Bu yorum silinsin mi?"))return;await sb.from("comments").delete().eq("id",id);rr()}
 document.addEventListener("selectionchange",()=>{const s=getSelection(),t=$("#txt");if(!t||s.isCollapsed||!t.contains(s.anchorNode))return;const x=s.toString().trim();if(x){q=x;$("#sq").textContent="“"+x.slice(0,140)+"”";$("#sel").style.display="block"}});
 $("#sx").onclick=()=>$("#sel").style.display="none";
-$("#sg").onclick=()=>{const m=$("#si").value.trim();if(!m||!q)return;CM[window.K].push({q,m});$("#si").value="";q="";const y=scrollY;route();scrollTo(0,y);toast("Yorum eklendi")};
+$("#sg").onclick=async()=>{if(!me)return authBox();const m=$("#si").value.trim();if(!m||!q)return;const r=await sb.from("comments").insert({chapter_id:CH,quote:q,body:m});if(r.error)return toast(r.error.message);$("#si").value="";q="";$("#sel").style.display="none";toast("Yorum eklendi");rr()};
+/* ---- yönetim ---- */
+const FD={books:[["title","Kitap adı"],["genre","Tür"],["status","Durum","s:Devam ediyor,Tamamlandı,Yakında"],["description","Tanıtım yazısı","area"],["position","Sıra (küçük sayı önce)","number"],["cover_url","Kapak görseli","img"]],
+characters:[["name","Karakter adı"],["age","Yaş"],["traits","Kişilik özellikleri","area"],["role","Hikâyedeki rolü"],["image_url","Karakter görseli","img"],["position","Sıra","number"]],
+chapters:[["title","Bölüm başlığı"],["position","Sıra (1, 2, 3…)","number"],["body","Bölüm metni (paragrafları boş satırla ayır)","big"]]};
+const fld=([k,l,t],v)=>`<label>${l}</label>`+(t=="area"||t=="big"?`<textarea class="${t}" data-k="${k}">${esc(v)}</textarea>`:t=="img"?`<img id="pv-${k}" class="pv" src="${esc(v)}" ${v?"":"hidden"}><input type="hidden" data-k="${k}" value="${esc(v)}"><input type="file" accept="image/*" onchange="up(this,'${k}')">`:t&&t[0]=="s"?`<select data-k="${k}">${t.slice(2).split(",").map(o=>`<option${o==v?" selected":""}>${o}</option>`).join("")}</select>`:`<input data-k="${k}"${t=="number"?' type="number"':""} value="${esc(v)}">`);
+async function up(i,k){const f=i.files[0];if(!f)return;toast("Yükleniyor…");const p="gorseller/"+Date.now()+"-"+f.name.replace(/[^\w.]/g,"");const{error}=await sb.storage.from("images").upload(p,f);if(error)return toast(error.message);const u=sb.storage.from("images").getPublicUrl(p).data.publicUrl;$(`[data-k=${k}]`).value=u;const im=$("#pv-"+k);im.src=u;im.hidden=false;toast("Görsel hazır, Kaydet’e bas")}
+async function edit(tb,id,bid){let v={};if(id!="new")v=(await sb.from(tb).select().eq("id",id).maybeSingle()).data||{};
+const B=bid||v.book_id,back=tb=="books"?"admin":"ab-"+B,ch=tb=="chapters",a=`'${tb}','${id}',${B||0}`;let ex="";
+if(tb=="books"&&id!="new"){const[c,p]=await Promise.all([sb.from("characters").select("id,name").eq("book_id",id).order("position"),sb.from("chapters").select("id,title,published").eq("book_id",id).order("position").order("id")]);
+ex=`<h2 class="ser" style="margin-top:30px">Karakterler</h2>${(c.data||[]).map(x=>`<div class="card row" onclick="go('ar-${x.id}')">${esc(x.name)}<span>Düzenle</span></div>`).join("")}<button class="btn p" onclick="go('ar-new-${id}')">+ Yeni karakter</button>
+<h2 class="ser" style="margin-top:30px">Bölümler</h2>${(p.data||[]).map(x=>`<div class="card row" onclick="go('ac-${x.id}')">${esc(x.title)}<span class="st">${x.published?"Yayında":"Taslak"}</span></div>`).join("")}<button class="btn p" onclick="go('ac-new-${id}')">+ Yeni bölüm</button>`}
+app.innerHTML=`<div class="w">${bar()}<button class="back" onclick="go('${back}')">← Geri</button><h2 class="ser">${id=="new"?"Yeni ekle":"Düzenle"}</h2><div class="card">${FD[tb].map(f=>fld(f,v[f[0]])).join("")}
+<div class="bar2">${ch?`<button class="btn" onclick="sv(${a},0)">Taslak olarak kaydet</button><button class="btn p" onclick="sv(${a},1)">Yayımla</button>`:`<button class="btn p" onclick="sv(${a})">Kaydet</button>`}${id!="new"?`<button class="btn" onclick="rm(${a})">Sil</button>`:""}</div></div>${ex}</div>`}
+async function sv(tb,id,bid,pub){const o={};document.querySelectorAll("[data-k]").forEach(e=>{if(e.value!==""||e.type!="number")o[e.dataset.k]=e.value});
+if(tb=="chapters")o.published=pub==1;if(tb!="books")o.book_id=bid;
+const r=id=="new"?await sb.from(tb).insert(o).select().single():await sb.from(tb).update(o).eq("id",id).select().single();
+if(r.error)return toast(r.error.message);toast(tb=="chapters"?(pub?"Yayımlandı":"Taslak kaydedildi"):"Kaydedildi");
+if(id=="new")go(tb=="books"?"ab-"+r.data.id:"ab-"+bid)}
+async function rm(tb,id,bid){if(!confirm("Silinsin mi? Bu geri alınamaz."))return;const r=await sb.from(tb).delete().eq("id",id);if(r.error)return toast(r.error.message);go(tb=="books"?"admin":"ab-"+bid)}
+async function admin(){const[a,b,c]=await Promise.all([sb.from("site").select().eq("id",1).maybeSingle(),sb.from("announcements").select().order("created_at",{ascending:false}),sb.from("books").select("id,title,status").order("position").order("id")]);const s=a.data||{};
+app.innerHTML=`<div class="w">${bar()}<button class="back" onclick="go('home')">← Siteye dön</button><h2 class="ser">Yönetim Paneli</h2>
+<h3 class="ser" style="font-size:26px">Kitaplar</h3>${(c.data||[]).map(x=>`<div class="card row" onclick="go('ab-${x.id}')">${esc(x.title)}<span class="st">${esc(x.status)}</span></div>`).join("")}<button class="btn p" onclick="go('ab-new')">+ Yeni kitap</button>
+<h3 class="ser" style="font-size:26px;margin-top:34px">Ana sayfa bilgileri</h3><div class="card"><label>Yazar adı</label><input id="s1" value="${esc(s.author)}"><label>Biyografi / karşılama yazısı</label><textarea id="s2">${esc(s.bio)}</textarea><label>Türler (virgülle ayır)</label><input id="s3" value="${esc((s.tags||[]).join(", "))}"><div class="bar2"><button class="btn p" onclick="saveSite()">Kaydet</button></div></div>
+<h3 class="ser" style="font-size:26px;margin-top:34px">Duyurular</h3>${(b.data||[]).map(x=>`<div class="card row" style="cursor:default">${esc(x.message)}<button class="btn" onclick="delAnn(${x.id})">Sil</button></div>`).join("")}<input id="an" placeholder="Yeni duyuru yaz…"><div class="bar2"><button class="btn p" onclick="addAnn()">Duyuru yayınla</button></div></div>`}
+async function saveSite(){const r=await sb.from("site").update({author:$("#s1").value,bio:$("#s2").value,tags:$("#s3").value.split(",").map(x=>x.trim()).filter(Boolean)}).eq("id",1);toast(r.error?r.error.message:"Kaydedildi")}
+async function addAnn(){const m=$("#an").value.trim();if(!m)return;const r=await sb.from("announcements").insert({message:m});if(r.error)return toast(r.error.message);route()}
+async function delAnn(id){await sb.from("announcements").delete().eq("id",id);route()}
+async function route(){const h=location.hash.slice(1).split("-"),t=h[0],adminR=["admin","ab","ac","ar"].includes(t);$("#sel").style.display="none";
+document.documentElement.className="pg-"+(t=="book"?"book":t=="read"||adminR?"read":"home");
+try{if(adminR&&!adm){app.innerHTML=`<div class="w">${bar()}<p>Bu alan yalnızca yazar içindir.</p><button class="btn" onclick="go('home')">Ana sayfa</button></div>`;return}
+if(t=="book")await book(h[1]);else if(t=="read")await read(h[1]);else if(t=="admin")await admin();
+else if(t=="ab")await edit("books",h[1]);else if(t=="ac")await(h[1]=="new"?edit("chapters","new",+h[2]):edit("chapters",h[1]));
+else if(t=="ar")await(h[1]=="new"?edit("characters","new",+h[2]):edit("characters",h[1]));else await home()}
+catch(e){app.innerHTML=`<div class="w"><p>Bir sorun oluştu: ${esc(e.message)}</p></div>`}}
+addEventListener("hashchange",()=>{scrollTo(0,0);route()});
+load().then(route);
 </script></body></html>
