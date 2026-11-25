@@ -49,6 +49,11 @@ textarea{min-height:90px}textarea.big{min-height:380px;line-height:1.7}.pv{max-w
 .md{background:var(--foam);border-radius:18px;padding:20px;width:100%;max-width:380px}.md input{margin:6px 0}.er{color:#a33;font-size:13px;min-height:18px}
 #sel{position:fixed;left:0;right:0;bottom:0;background:var(--foam);border-top:1px solid rgba(31,67,80,.15);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:none;z-index:5}
 #sel input{margin:8px 0}
+.fade{animation:fd .5s ease}@keyframes fd{from{opacity:0;transform:translateY(8px)}}@media (prefers-reduced-motion:reduce){.fade{animation:none}}
+html:has(body.night){background:#17262d}body.night{background:#17262d;--ink:#d5e6ea;--mu:#8fb0ba;--pet:#6fb8b0}
+body.night #txt{color:#d5e6ea}body.night .card,body.night #sel,body.night .md{background:#203540;border-color:rgba(255,255,255,.12)}
+body.night .btn{background:#203540;color:#d5e6ea;border-color:rgba(255,255,255,.2)}body.night .btn.p{background:#2f7f8c;color:#fff}
+body.night input,body.night textarea{background:#203540;color:#d5e6ea;border-color:rgba(255,255,255,.2)}
 #toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 16px;border-radius:20px;display:none;z-index:30;font-size:14px}
 </style></head><body>
 <div id="app"></div><div id="m"></div>
@@ -56,7 +61,8 @@ textarea{min-height:90px}textarea.big{min-height:380px;line-height:1.7}.pv{max-w
 <div id="toast"></div>
 <script>
 const sb=supabase.createClient("https://tcnlpsrxiyugvfurahfw.supabase.co","sb_publishable_v6hr4L3Cn2t30oT5KSLBbg_wfFzWaSV");
-let me=null,adm=false,S={size:19,lh:1.8,serif:true},q="",CH=0;
+const LS=(k,v)=>{try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let me=null,adm=false,S={size:19,lh:1.8,night:false,...(LS("rs")||{}),serif:true},q="",CH=0,nf=0;
 const $=s=>document.querySelector(s),app=$("#app");
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const toast=m=>{const t=$("#toast");t.textContent=m;t.style.display="block";setTimeout(()=>t.style.display="none",2600)};
@@ -64,6 +70,7 @@ const PAL=["#1f6f8b,#6fb8b0","#b98b62,#ecd1a8","#4a74a8,#a9c6e6"],grad=c=>`linea
 const cov=(b,st="")=>b.cover_url?`<div class="cover" style="${st};background:url('${esc(b.cover_url)}') center/cover"></div>`:`<div class="cover" style="${st};background:${grad(PAL[b.id%3])}">${esc(b.title)}</div>`;
 const go=h=>location.hash=h;
 const vid=()=>{try{let v=localStorage.getItem("vid");if(!v){v=(crypto.randomUUID?crypto.randomUUID():String(Math.random()).slice(2)+Date.now());localStorage.setItem("vid",v)}return v}catch(e){return "anon-"+Math.random().toString(36).slice(2,12)}};
+const wc=t=>(String(t||"").match(/\S+/g)||[]).length;
 const stats=async()=>{const r=await sb.rpc("book_stats"),o={};(r.data||[]).forEach(x=>o[x.book_id]=Number(x.visitors));return o};
 async function fol(on){if(!me)return authBox();const r=on?await sb.from("follows").delete().eq("user_id",me.id):await sb.from("follows").insert({user_id:me.id});if(r.error)toast(r.error.message);rr()}
 async function load(){const{data:{session}}=await sb.auth.getSession();me=session?session.user:null;adm=false;if(me){const{data}=await sb.from("admins").select("user_id").eq("user_id",me.id).maybeSingle();adm=!!data}}
@@ -79,27 +86,27 @@ async function home(){const[a,b,c,fc,st,mf]=await Promise.all([sb.from("site").s
 const s=a.data||{},A=b.data||[],K=c.data||[];
 app.innerHTML=`<header class="deep">${bar()}<div class="hero"><div class="logo">🐚</div><h1 class="ser">${esc(s.author||"Solyra")}</h1><p class="lead">${esc(s.bio||"Hoş geldin. Burası hikâyelerimin yaşadığı küçük bir dünya.")}</p><div class="tags">${(s.tags||[]).map(t=>`<span>${esc(t)}</span>`).join("")}</div><p style="margin:14px 0 0"><button class="btn" onclick="fol(${!!mf.data})">${mf.data?"✓ Takiptesin":"+ Takip et"}</button> <span style="margin-left:8px">${Number(fc.data||0)} takipçi</span></p></div>${A.length?`<div class="ann"><h3 class="ser">Duyurular</h3>${A.map(x=>`<div>${esc(x.message)}</div>`).join("")}</div>`:""}</header><div class="wave a"></div>
 <section class="lib"><div class="w"><h2 class="ser">Kitaplarım</h2>${K.length?`<div class="shelf">${K.map(b=>`<div class="bk" onclick="go('book-${b.id}')">${cov(b)}<small><span class="st">${esc(b.status)}</span> ${esc(b.genre)}<br>👁 ${st[b.id]||0} okur</small></div>`).join("")}</div>`:"<p>Henüz kitap eklenmedi.</p>"}</div></section><div class="wave b"></div><footer class="deep foot">🐚 ${esc(s.author||"Solyra")}</footer>`}
-async function book(id){if(!adm)await sb.rpc("track_visit",{p_book:+id,p_visitor:vid()});const st=await stats();const[a,b,c]=await Promise.all([sb.from("books").select().eq("id",id).maybeSingle(),sb.from("characters").select().eq("book_id",id).order("position"),sb.from("chapters").select("id,title,published").eq("book_id",id).order("position").order("id")]);
+async function book(id){if(!adm)await sb.rpc("track_visit",{p_book:+id,p_visitor:vid()});const st=await stats();const[a,b,c]=await Promise.all([sb.from("books").select().eq("id",id).maybeSingle(),sb.from("characters").select().eq("book_id",id).order("position"),sb.from("chapters").select("id,title,published,body,updated_at").eq("book_id",id).order("position").order("id")]);
 const k=a.data;if(!k){app.innerHTML=`<div class="w">${bar()}<p>Kitap bulunamadı.</p></div>`;return}
-const C=b.data||[],P=c.data||[];
+const C=b.data||[],P=c.data||[],lc=P.find(x=>x.id==LS("last-"+id));
 app.innerHTML=`<div class="w">${bar()}<button class="back" onclick="go('home')">← Ana sayfa</button>
 <div style="display:flex;gap:18px;align-items:flex-end">${cov(k,"width:120px;flex:none")}<div><h1 style="margin:0;font-size:38px">${esc(k.title)}</h1><span class="st">${esc(k.status)}</span> ${esc(k.genre)}<br><small>👁 ${st[k.id]||0} okur</small></div></div>
 <p style="margin:18px 0;white-space:pre-line">${esc(k.description)}</p>
-${C.length?`<h2 class="ser" style="margin-top:30px">Karakterler</h2><div class="chars">${C.map((c,i)=>`<div class="fc" onclick="this.classList.toggle('on')"><div class="fi"><div class="fa" style="background:${c.image_url?`url('${esc(c.image_url)}') center/cover`:grad(PAL[i%3])}">${c.image_url?"":"<i>🐚</i>"}${esc(c.name)}</div><div class="fb"><b>${esc(c.name)}</b><br>Yaş: ${esc(c.age)}<br>Kişilik: ${esc(c.traits)}<br>Rol: ${esc(c.role)}</div></div></div>`).join("")}</div>`:""}
-<h2 class="ser" style="margin-top:34px">Bölümler</h2>${P.map((p,i)=>`<div class="card row" onclick="go('read-${p.id}')"><span><b class="ser" style="font-size:26px;color:var(--pet)">${i+1}</b> &nbsp;${esc(p.title)}</span>${p.published?"":'<span class="st">Taslak</span>'}</div>`).join("")||"<p>Henüz bölüm yok.</p>"}</div>`}
+${C.length?`<h2 class="ser" style="margin-top:30px">Karakterler</h2><div class="chars">${C.map((c,i)=>`<div class="fc" onclick="this.classList.toggle('on')"><div class="fi"><div class="fa" style="background:${c.image_url?`url('${esc(c.image_url)}') center/cover`:grad(PAL[i%3])}">${c.image_url?"":"<i>🐚</i>"}${esc(c.name)}</div><div class="fb"><b>${esc(c.name)}</b><br>Yaş: ${esc(c.age)}<br>Doğum günü: ${c.birthday?new Date(c.birthday+"T12:00:00").toLocaleDateString("tr-TR",{day:"numeric",month:"long"}):"—"}</div></div></div>`).join("")}</div>`:""}
+${lc?`<button class="btn p" style="margin-top:26px" onclick="go('read-${lc.id}')">Kaldığın yerden devam et: ${esc(lc.title)}</button>`:""}<h2 class="ser" style="margin-top:34px">Bölümler</h2>${P.map((p,i)=>`<div class="card row" onclick="go('read-${p.id}')"><span><b class="ser" style="font-size:26px;color:var(--pet)">${i+1}</b> &nbsp;${esc(p.title)} <small style="color:var(--mu)">· ${wc(p.body)} kelime</small></span>${p.published?"":'<span class="st">Taslak</span>'}</div>`).join("")||"<p>Henüz bölüm yok.</p>"}</div>`}
 async function read(id){CH=+id;const{data:c}=await sb.from("chapters").select().eq("id",id).maybeSingle();
 if(!c){app.innerHTML=`<div class="w">${bar()}<p>Bölüm bulunamadı.</p></div>`;return}
-const[l,m]=await Promise.all([sb.from("likes").select("user_id").eq("chapter_id",id),sb.from("comments").select().eq("chapter_id",id).order("created_at")]);
+LS("last-"+c.book_id,+id);const[l,m]=await Promise.all([sb.from("likes").select("user_id").eq("chapter_id",id),sb.from("comments").select().eq("chapter_id",id).order("created_at")]);
 const M=m.data||[],L=l.data||[],ids=[...new Set(M.map(x=>x.user_id))],pr=ids.length?(await sb.from("profiles").select("id,username").in("id",ids)).data||[]:[],nm={};pr.forEach(p=>nm[p.id]=p.username);
 const cm=(x,r)=>`<div class="card ${r?"rep":""}"><b>${esc(nm[x.user_id]||"Okur")}</b> <small>${new Date(x.created_at).toLocaleDateString("tr-TR")}</small>${x.quote?`<div class="q">“${esc(x.quote)}”</div>`:""}<div>${esc(x.body)}</div><small>${r?"":`<a onclick="reply(${x.id})">Cevapla</a>`}${me&&(adm||me.id==x.user_id)?` ${r?"":"· "}<a onclick="delc(${x.id})">Sil</a>`:""}</small></div>`;
 const ff=S.serif?'"Cormorant Garamond",Georgia,serif':"Inter,sans-serif",liked=me&&L.some(x=>x.user_id==me.id);
-app.innerHTML=`<div class="w" style="max-width:720px">${bar()}<button class="back" onclick="go('book-${c.book_id}')">← Kitaba dön</button><h2 class="ser">${esc(c.title)}</h2>
-<div class="bar"><button class="btn" onclick="st('size',-1)">A−</button><button class="btn" onclick="st('size',1)">A+</button><button class="btn" onclick="st('lh')">Satır aralığı</button><button class="btn" onclick="st('f')">Yazı tipi</button><button class="btn" onclick="lk(${id},${!!liked})">${liked?"♥":"♡"} ${L.length}</button></div>
+app.innerHTML=`<div class="w" style="max-width:720px">${bar()}<button class="back" onclick="go('book-${c.book_id}')">← Kitaba dön</button><h2 class="ser">${esc(c.title)}</h2><p style="color:var(--mu);font-size:14px;margin:-8px 0 14px">${wc(c.body)} kelime${c.updated_at?` · Son güncelleme: ${new Date(c.updated_at).toLocaleDateString("tr-TR")}`:""}</p>
+<div class="bar"><button class="btn" onclick="st('size',-1)">A−</button><button class="btn" onclick="st('size',1)">A+</button><button class="btn" onclick="st('lh')">Satır aralığı</button><button class="btn" onclick="st('n')">${S.night?"☀️ Gündüz":"🌙 Gece"}</button><button class="btn" onclick="lk(${id},${!!liked})">${liked?"♥":"♡"} ${L.length}</button></div>
 <div id="txt" style="font:${S.size}px/${S.lh} ${ff}">${String(c.body||"").split(/\n+/).filter(Boolean).map(t=>`<p>${esc(t)}</p>`).join("")}</div>
-<p style="color:var(--mu);font-size:13px">Bir cümleyi seç, o kısma özel yorum bırak.</p>
+${c.author_note?`<div class="card" style="border-left:4px solid var(--pet)"><b class="ser" style="font-size:21px">Yazarın notu</b><div style="white-space:pre-line">${esc(c.author_note)}</div></div>`:""}<p style="color:var(--mu);font-size:13px">Bir cümleyi seç, o kısma özel yorum bırak.</p>
 <h2 class="ser" style="margin-top:30px">Yorumlar</h2>${M.filter(x=>!x.parent_id).map(x=>cm(x)+M.filter(y=>y.parent_id==x.id).map(y=>cm(y,1)).join("")).join("")||"<p style='color:var(--mu)'>İlk yorumu sen yaz.</p>"}</div>`}
 const rr=async()=>{const y=scrollY;await route();scrollTo(0,y)};
-function st(a){if(a=="f")S.serif=!S.serif;else if(a=="lh")S.lh=S.lh>=2.2?1.5:+(S.lh+.2).toFixed(1);else S.size=Math.min(30,Math.max(14,S.size+(arguments[1]||0)));rr()}
+function st(a){if(a=="n")S.night=!S.night;else if(a=="f")S.serif=!S.serif;else if(a=="lh")S.lh=S.lh>=2.2?1.5:+(S.lh+.2).toFixed(1);else S.size=Math.min(30,Math.max(14,S.size+(arguments[1]||0)));LS("rs",S);rr()}
 async function lk(id,on){if(!me)return authBox();const r=on?await sb.from("likes").delete().eq("chapter_id",id).eq("user_id",me.id):await sb.from("likes").insert({chapter_id:id});if(r.error)toast(r.error.message);rr()}
 async function reply(pid){if(!me)return authBox();const t=prompt("Cevabın:");if(!t)return;const r=await sb.from("comments").insert({chapter_id:CH,parent_id:pid,body:t});if(r.error)toast(r.error.message);rr()}
 async function delc(id){if(!confirm("Bu yorum silinsin mi?"))return;await sb.from("comments").delete().eq("id",id);rr()}
@@ -108,9 +115,9 @@ $("#sx").onclick=()=>$("#sel").style.display="none";
 $("#sg").onclick=async()=>{if(!me)return authBox();const m=$("#si").value.trim();if(!m||!q)return;const r=await sb.from("comments").insert({chapter_id:CH,quote:q,body:m});if(r.error)return toast(r.error.message);$("#si").value="";q="";$("#sel").style.display="none";toast("Yorum eklendi");rr()};
 /* ---- yönetim ---- */
 const FD={books:[["title","Kitap adı"],["genre","Tür"],["status","Durum","s:Devam ediyor,Tamamlandı,Yakında"],["description","Tanıtım yazısı","area"],["position","Sıra (küçük sayı önce)","number"],["cover_url","Kapak görseli","img"]],
-characters:[["name","Karakter adı"],["age","Yaş"],["traits","Kişilik özellikleri","area"],["role","Hikâyedeki rolü"],["image_url","Karakter görseli","img"],["position","Sıra","number"]],
-chapters:[["title","Bölüm başlığı"],["position","Sıra (1, 2, 3…)","number"],["body","Bölüm metni (paragrafları boş satırla ayır)","big"]]};
-const fld=([k,l,t],v)=>`<label>${l}</label>`+(t=="area"||t=="big"?`<textarea class="${t}" data-k="${k}">${esc(v)}</textarea>`:t=="img"?`<img id="pv-${k}" class="pv" src="${esc(v)}" ${v?"":"hidden"}><input type="hidden" data-k="${k}" value="${esc(v)}"><input type="file" accept="image/*" onchange="up(this,'${k}')">`:t&&t[0]=="s"?`<select data-k="${k}">${t.slice(2).split(",").map(o=>`<option${o==v?" selected":""}>${o}</option>`).join("")}</select>`:`<input data-k="${k}"${t=="number"?' type="number"':""} value="${esc(v)}">`);
+characters:[["name","Karakter adı"],["age","Yaş"],["birthday","Doğum günü","date"],["traits","Kişilik özellikleri (kartta görünmez)","area"],["role","Hikâyedeki rolü (kartta görünmez)"],["image_url","Karakter görseli","img"],["position","Sıra","number"]],
+chapters:[["title","Bölüm başlığı"],["position","Sıra (1, 2, 3…)","number"],["body","Bölüm metni (paragrafları boş satırla ayır)","big"],["author_note","Yazarın notu (isteğe bağlı)","area"]]};
+const fld=([k,l,t],v)=>`<label>${l}</label>`+(t=="area"||t=="big"?`<textarea class="${t}" data-k="${k}">${esc(v)}</textarea>`:t=="img"?`<img id="pv-${k}" class="pv" src="${esc(v)}" ${v?"":"hidden"}><input type="hidden" data-k="${k}" value="${esc(v)}"><input type="file" accept="image/*" onchange="up(this,'${k}')">`:t&&t[0]=="s"?`<select data-k="${k}">${t.slice(2).split(",").map(o=>`<option${o==v?" selected":""}>${o}</option>`).join("")}</select>`:`<input data-k="${k}"${t=="number"||t=="date"?` type="${t}"`:""} value="${esc(v)}">`);
 async function up(i,k){const f=i.files[0];if(!f)return;toast("Yükleniyor…");const p="gorseller/"+Date.now()+"-"+f.name.replace(/[^\w.]/g,"");const{error}=await sb.storage.from("images").upload(p,f);if(error)return toast(error.message);const u=sb.storage.from("images").getPublicUrl(p).data.publicUrl;$(`[data-k=${k}]`).value=u;const im=$("#pv-"+k);im.src=u;im.hidden=false;toast("Görsel hazır, Kaydet’e bas")}
 async function edit(tb,id,bid){let v={};if(id!="new")v=(await sb.from(tb).select().eq("id",id).maybeSingle()).data||{};
 const B=bid||v.book_id,back=tb=="books"?"admin":"ab-"+B,ch=tb=="chapters",a=`'${tb}','${id}',${B||0}`;let ex="";
@@ -119,7 +126,7 @@ ex=`<h2 class="ser" style="margin-top:30px">Karakterler</h2>${(c.data||[]).map(x
 <h2 class="ser" style="margin-top:30px">Bölümler</h2>${(p.data||[]).map(x=>`<div class="card row" onclick="go('ac-${x.id}')">${esc(x.title)}<span class="st">${x.published?"Yayında":"Taslak"}</span></div>`).join("")}<button class="btn p" onclick="go('ac-new-${id}')">+ Yeni bölüm</button>`}
 app.innerHTML=`<div class="w">${bar()}<button class="back" onclick="go('${back}')">← Geri</button><h2 class="ser">${id=="new"?"Yeni ekle":"Düzenle"}</h2><div class="card">${FD[tb].map(f=>fld(f,v[f[0]])).join("")}
 <div class="bar2">${ch?`<button class="btn" onclick="sv(${a},0)">Taslak olarak kaydet</button><button class="btn p" onclick="sv(${a},1)">Yayımla</button>`:`<button class="btn p" onclick="sv(${a})">Kaydet</button>`}${id!="new"?`<button class="btn" onclick="rm(${a})">Sil</button>`:""}</div></div>${ex}</div>`}
-async function sv(tb,id,bid,pub){const o={};document.querySelectorAll("[data-k]").forEach(e=>{if(e.value!==""||e.type!="number")o[e.dataset.k]=e.value});
+async function sv(tb,id,bid,pub){const o={};document.querySelectorAll("[data-k]").forEach(e=>{if(e.value!==""||(e.type!="number"&&e.type!="date"))o[e.dataset.k]=e.value});
 if(tb=="chapters")o.published=pub==1;if(tb!="books")o.book_id=bid;
 const r=id=="new"?await sb.from(tb).insert(o).select().single():await sb.from(tb).update(o).eq("id",id).select().single();
 if(r.error)return toast(r.error.message);toast(tb=="chapters"?(pub?"Yayımlandı":"Taslak kaydedildi"):"Kaydedildi");
@@ -134,12 +141,12 @@ async function saveSite(){const r=await sb.from("site").update({author:$("#s1").
 async function addAnn(){const m=$("#an").value.trim();if(!m)return;const r=await sb.from("announcements").insert({message:m});if(r.error)return toast(r.error.message);route()}
 async function delAnn(id){await sb.from("announcements").delete().eq("id",id);route()}
 async function route(){const h=location.hash.slice(1).split("-"),t=h[0],adminR=["admin","ab","ac","ar"].includes(t);$("#sel").style.display="none";
-document.documentElement.className="pg-"+(t=="book"?"book":t=="read"||adminR?"read":"home");
+document.body.classList.toggle("night",t=="read"&&!!S.night);document.documentElement.className="pg-"+(t=="book"?"book":t=="read"||adminR?"read":"home");
 try{if(adminR&&!adm){app.innerHTML=`<div class="w">${bar()}<p>Bu alan yalnızca yazar içindir.</p><button class="btn" onclick="go('home')">Ana sayfa</button></div>`;return}
 if(t=="book")await book(h[1]);else if(t=="read")await read(h[1]);else if(t=="admin")await admin();
 else if(t=="ab")await edit("books",h[1]);else if(t=="ac")await(h[1]=="new"?edit("chapters","new",+h[2]):edit("chapters",h[1]));
 else if(t=="ar")await(h[1]=="new"?edit("characters","new",+h[2]):edit("characters",h[1]));else await home()}
-catch(e){app.innerHTML=`<div class="w"><p>Bir sorun oluştu: ${esc(e.message)}</p></div>`}}
-addEventListener("hashchange",()=>{scrollTo(0,0);route()});
+catch(e){app.innerHTML=`<div class="w"><p>Bir sorun oluştu: ${esc(e.message)}</p></div>`}if(nf){nf=0;app.classList.remove("fade");void app.offsetWidth;app.classList.add("fade")}}
+addEventListener("hashchange",()=>{nf=1;scrollTo(0,0);route()});
 load().then(route);
 </script></body></html>
